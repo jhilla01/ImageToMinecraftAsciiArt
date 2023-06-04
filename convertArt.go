@@ -26,12 +26,6 @@ type PixelBlock struct {
 	Name string
 }
 
-type ImageTemplate struct {
-	Width  int
-	Height int
-	Pixels []PixelBlock
-}
-
 var MinecraftPalette = []Block{
 	{Name: "Grass Block", Color: color.RGBA{R: 124, G: 185, B: 72, A: 255}},  // Green
 	{Name: "Lime Wool", Color: color.RGBA{R: 112, G: 185, B: 25, A: 255}},    // Green
