@@ -7,8 +7,10 @@ import (
 	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
+	"io/ioutil"
 	"math"
 	"os"
+	"path"
 	"text/template"
 )
 
@@ -154,22 +156,14 @@ func max(a, b int) int {
 }
 
 func main() {
-	// Open the input image file
-	inFile, err := os.Open("Input Images/input.png")
+	// List all files in the "Input Images" directory
+	files, err := ioutil.ReadDir("Input Images")
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "failed to open image:", err)
-		os.Exit(1)
-	}
-	defer inFile.Close()
-
-	// Decode the image
-	img, _, err := image.Decode(inFile)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "failed to decode image:", err)
+		fmt.Fprintln(os.Stderr, "failed to list images:", err)
 		os.Exit(1)
 	}
 
-	// Create the Ascii Art directory if it doesn't exist
+	// Create the "Ascii Art" directory if it doesn't exist
 	if _, err := os.Stat("Ascii Art"); os.IsNotExist(err) {
 		err = os.Mkdir("Ascii Art", 0755)
 		if err != nil {
@@ -178,10 +172,32 @@ func main() {
 		}
 	}
 
-	// Generate the HTML file in the Ascii Art directory
-	err = generateHTML(img, "Ascii Art/output.html")
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "failed to generate HTML:", err)
-		os.Exit(1)
+	// Process each image
+	for _, file := range files {
+		// Skip directories
+		if file.IsDir() {
+			continue
+		}
+
+		// Open the image file
+		inFile, err := os.Open(path.Join("Input Images", file.Name()))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "failed to open image:", err)
+			continue // Skip this file and try the next one
+		}
+
+		// Decode the image
+		img, _, err := image.Decode(inFile)
+		inFile.Close()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "failed to decode image:", err)
+			continue // Skip this file and try the next one
+		}
+
+		// Generate the HTML file in the "Ascii Art" directory
+		err = generateHTML(img, path.Join("Ascii Art", file.Name()+".html"))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "failed to generate HTML:", err)
+		}
 	}
 }
