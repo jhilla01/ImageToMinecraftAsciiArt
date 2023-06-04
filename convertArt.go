@@ -11,6 +11,8 @@ import (
 	"math"
 	"os"
 	"path"
+	"path/filepath"
+	"strings"
 	"text/template"
 )
 
@@ -188,7 +190,8 @@ func main() {
 		}
 
 		// Generate the HTML file in the "Ascii Art" directory
-		err = generateHTML(img, path.Join("Ascii Art", file.Name()+".html"))
+		outputFile := strings.TrimSuffix(file.Name(), filepath.Ext(file.Name())) + ".html"
+		err = generateHTML(img, path.Join("Ascii Art", outputFile))
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "failed to generate HTML:", err)
 		}
