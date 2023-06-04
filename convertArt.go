@@ -111,24 +111,23 @@ func generateHTML(img image.Image, output string) error {
 	}
 
 	tmpl := template.Must(template.New("").Parse(`
-	<!DOCTYPE html>
-	<html>
-		<head>
-			<style>
-				.table { width: 100%; height: 100%; border-spacing: 0; }
-				.cell { width: {{.CellSize}}%; height: {{.CellSize}}%; background-color: rgb({{.R}}, {{.G}}, {{.B}}); }
-			</style>
-		</head>
-		<body>
-			<div class="table">
-				{{range .Pixels}}
-				<div class="cell" title="{{.Name}}">
-				</div>
-				{{end}}
-			</div>
-		</body>
-	</html>
-	`))
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <style>
+                .table { width: 100vw; height: 100vh; display: flex; flex-wrap: wrap; }
+                .cell { width: {{.CellSize}}vw; height: {{.CellSize}}vh; background-color: rgb({{.R}}, {{.G}}, {{.B}}); }
+            </style>
+        </head>
+        <body>
+            <div class="table">
+                {{range .Pixels}}
+                <div class="cell" title="{{.Name}}" style="background-color: rgb({{.R}}, {{.G}}, {{.B}});"></div>
+                {{end}}
+            </div>
+        </body>
+    </html>
+    `))
 
 	file, err := os.Create(output)
 	if err != nil {
