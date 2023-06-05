@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/nfnt/resize"
 	"image"
 	"image/color"
 	_ "image/gif"
@@ -188,6 +189,9 @@ func main() {
 			fmt.Fprintln(os.Stderr, "failed to decode image:", err)
 			continue // Skip this file and try the next one
 		}
+
+		// Resize the image to 128x128
+		img = resize.Resize(128, 128, img, resize.Lanczos3)
 
 		// Generate the HTML file in the "Ascii Art" directory
 		outputFile := strings.TrimSuffix(file.Name(), filepath.Ext(file.Name())) + ".html"
