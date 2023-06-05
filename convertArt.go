@@ -190,8 +190,15 @@ func main() {
 			continue // Skip this file and try the next one
 		}
 
-		// Resize the image to 128x128
-		img = resize.Resize(128, 128, img, resize.Lanczos3)
+		// Resize the image keeping the aspect ratio
+		bounds := img.Bounds()
+		imgWidth := bounds.Max.X
+		imgHeight := bounds.Max.Y
+		if imgWidth > imgHeight {
+			img = resize.Resize(96, 0, img, resize.Lanczos3) // set width to 128 and calculate height
+		} else {
+			img = resize.Resize(0, 96, img, resize.Lanczos3) // set height to 128 and calculate width
+		}
 
 		// Generate the HTML file in the "Ascii Art" directory
 		outputFile := strings.TrimSuffix(file.Name(), filepath.Ext(file.Name())) + ".html"
